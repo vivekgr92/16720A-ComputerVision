@@ -25,9 +25,9 @@ X2=pts2(:,1);
 Y2=pts2(:,2);
 
 %% Detrmine the A matrix -> AF=0 where F is the Fundamental Matrix
-%A=[ X1.*X2 X1.*Y2 X1 Y1.*X2 Y1.*Y2 Y1 X2 Y2 ones(size(X1))];
+A=[ X1.*X2 X1.*Y2 X1 Y1.*X2 Y1.*Y2 Y1 X2 Y2 ones(size(X1))];
 
-A=[ X2.*X1 X2.*Y1 X2 Y2.*X1 Y2.*Y1 Y2 X1 Y1 ones(size(X1))];
+%A=[ X2.*X1 X2.*Y1 X2 Y2.*X1 Y2.*Y1 Y2 X1 Y1 ones(size(X1))];
 
                                                                 
 %% Find two vectors that span null space of A (F1 and F2)---> alpha*F1+(1-alpha)*F2
