@@ -31,7 +31,7 @@ syms x y;
 
 corresP=zeros(2,2);
 j=1;
-PatchWidth=15 ;%7;%ones(size(x1));
+PatchWidth=20 ;%7;%ones(size(x1));
 %PatchWidth(:)=20;
 
 %% Image padding
@@ -50,7 +50,9 @@ for i=1:1 %length(h)
 
     % (N,*)
     eqn1=epipolarline(i,1)*N+epipolarline(i,2)*y+epipolarline(i,3)==0;
-    yfirst=solve(eqn1,y);
+   % yfirst=solve(eqn1,y);
+    y=-(epipolarline(i,1)*N)-(epipolarline(i,3))/epipolarline(i,2);
+    yfirst=y;
     yfirst=double(yfirst);
     
     if (yfirst>M||yfirst<50)==0
@@ -60,7 +62,9 @@ for i=1:1 %length(h)
     
     % (*,1)
     eqn2=epipolarline(i,1)*x+epipolarline(i,2)*50+epipolarline(i,3)==0;
-    xsecond=solve(eqn2,x);
+    %xsecond=solve(eqn2,x);
+    x=-(epipolarline(i,2)*50)-epipolarline(i,3)/epipolarline(i,1);
+    xsecond=x;
     xsecond=double(xsecond);
     
      if (xsecond>N||xsecond<50)==0
@@ -71,7 +75,9 @@ for i=1:1 %length(h)
      
      % (1,*)
     eqn3=epipolarline(i,1)*50+epipolarline(i,2)*y+epipolarline(i,3)==0;
-    y11=solve(eqn3,y);
+    %y11=solve(eqn3,y);
+    y=-(epipolarline(i,1)*50)-(epipolarline(i,3))/epipolarline(i,2);
+    y11=y;
     y11=double(y11);
     
     if (y11>M||y11<50)==0
@@ -82,7 +88,10 @@ for i=1:1 %length(h)
      
      % (*,M)
     eqn4=epipolarline(i,1)*x+epipolarline(i,2)*M+epipolarline(i,3)==0;
-    x11=solve(eqn4,x);
+    %x11=solve(eqn4,x); // if you use solve() the system takes in a lot of
+    %time
+    x=-(epipolarline(i,2)*M)-epipolarline(i,3)/epipolarline(i,1);
+    x11=x;
     x11=double(x11);
     
     if (x11>N||x11<50)==0
@@ -93,8 +102,8 @@ for i=1:1 %length(h)
  
  %% Finding points on line give two points on line using Linspace
  
- noOfpointsX=linspace(corresP(1,1),corresP(2,1),400);
- noOfpointsY=linspace(corresP(1,2),corresP(2,2),400);
+ noOfpointsX=linspace(corresP(1,1),corresP(2,1),200);
+ noOfpointsY=linspace(corresP(1,2),corresP(2,2),200);
  %noOfpointsX=linspace(corresP(1,1),corresP(2,1),100);
  %noOfpointsY=linspace(corresP(1,2),corresP(2,2),100);
  
@@ -111,9 +120,9 @@ for i=1:1 %length(h)
  I1_vectorize=I1_vectorize';
  I1_vectorize=double(I1_vectorize);
  
- for q=1:400
+ for q=1:200
      
-     if ( noOfpointsY(1,q)<y1(i)+50 && noOfpointsY(1,q)>y1(i)-50 && noOfpointsX(1,q)>x1(i)-50 && noOfpointsX(1,q)<x1(i)+50 )
+     if ( noOfpointsY(1,q)<y1(i)+20 && noOfpointsY(1,q)>y1(i)-20 && noOfpointsX(1,q)>x1(i)-20 && noOfpointsX(1,q)<x1(i)+20 )
          I2=img2_Pad((noOfpointsY(1,q)-PatchWidth : noOfpointsY(1,q)+PatchWidth) ,(noOfpointsX(1,q)-PatchWidth : noOfpointsX(1,q)+PatchWidth));
          I2_vectorize=I2(:);
          I2_stack(q,:)= double(I2_vectorize');
