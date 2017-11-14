@@ -70,4 +70,4 @@ scatter3(P(:,1),P(:,2),P(:,3));
 
 
 %% Saving parameters
-save('./data/q4_4.mat','F','M1','M2','C1','C2');  
+save('./data/q4_2.mat','F','M1','M2','C1','C2');  

@@ -16,7 +16,6 @@ function [ x2, y2 ] = epipolarCorrespondence( im1, im2, F, x1, y1 )
 
 %% Rounding of the input points
 
-
 %x1=round(x1);  % check
 %y1=round(y1);
 
@@ -136,6 +135,8 @@ end
 %corresPoints=corresP;
 %disp(size(corresPoints));
 
+%% Saving parameters
+%save('./data/q4_1.mat','F','ptsx','ptsy');   
 
  
 

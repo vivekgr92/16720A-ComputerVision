@@ -78,3 +78,5 @@ coordsIM2 = [coordsIM2; x2, y2]
 end
 
 subplot 121, hold off
+
+

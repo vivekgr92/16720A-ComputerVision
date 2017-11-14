@@ -28,7 +28,7 @@ M2s = camera2(E);
 %%Testing 3.3
 M1=[1 0 0 0;
     0 1 0 0;
-    0 0 1 0]
+    0 0 1 0];
 C1=K1*M1;
 
 for i=1:length(M2s)
@@ -44,9 +44,13 @@ end
 
 %% Best M2
 best_M2=M2s(:,:,best);
-
+P=best_P;
+M2=best_M2;
+C2=K2*M2s(:,:,best);
+p1=pts1;
+p2=pts2;
 %% Saving the Results
-save('./data/q3_3.mat','C2','best_M2','pts1','pts2','best_P');   
+save('./data/q3_3.mat','M2','C2','p1','p2','P');   
 
         
     
