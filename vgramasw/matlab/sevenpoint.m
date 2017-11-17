@@ -76,7 +76,7 @@ for i = 1 : length(real_roots)
     F{i} = T' * F{i} * T;
 end
 
-save('./matlab/q2_2.mat','F','M','pts1','pts2'); 
+save('./data/q2_2.mat','F','M','pts1','pts2'); 
 
 end
 
