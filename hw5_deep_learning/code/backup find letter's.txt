@@ -1,0 +1,109 @@
+function [lines, bw] = findLetters(im)
+% [lines, BW] = findLetters(im) processes the input RGB image and returns a cell
+% array 'lines' of located characters in the image, as well as a binary
+% representation of the input image. The cell array 'lines' should contain one
+% matrix entry for each line of text that appears in the image. Each matrix entry
+% should have size Lx4, where L represents the number of letters in that line.
+% Each row of the matrix should contain 4 numbers [x1, y1, x2, y2] representing
+% the top-left and bottom-right position of each box. The boxes in one line should
+% be sorted by x1 value.
+
+%% Reading image
+%img=imread('01_list.jpg');
+img=imread('02_letters.jpg');
+%img=imread('03_haiku.jpg');
+%img=imread('04_deep.jpg');
+if size(img,3)==3 % RGB image
+  img=rgb2gray(img);
+end
+
+%% Blur
+sigma=2.45;
+img = imgaussfilt(img,sigma);
+
+%% Binarization
+threshold = graythresh(img);
+img =~imbinarize(img,threshold);
+img=bwareaopen(img,100);
+
+
+%% Find connected components
+[L Ne]=bwlabel(img);
+%imshow(~img);
+
+%% Measure properties of image regions
+s = regionprops(L, 'BoundingBox', 'Extrema', 'Centroid');
+%hold on
+%% Sorting the Centroid
+cc = cat(1, s.Centroid);
+centroid_x=cc(:,1);
+centroid_y = cc(:,2);
+[cc_sorted_y, sort_order] = sort(centroid_y);
+
+cc_sorted_x=centroid_x(sort_order);
+sorted_centroid=[cc_sorted_x cc_sorted_y];
+
+%% Sorting the Bounding Box
+boxes = cat(1, s.BoundingBox);
+x1=boxes(:,1);
+y1=boxes(:,2);
+width=boxes(:,3);
+height=boxes(:,4);
+
+sorted_x1=x1(sort_order);
+sorted_y1=y1(sort_order);
+sorted_width=width(sort_order);
+sorted_height=height(sort_order);
+sorted_bounding_box=[sorted_x1 sorted_y1 sorted_width sorted_height];
+
+set(gcf, 'Position', [100 100 400 300]);
+imshow(~img, 'InitialMag', 'fit')
+hold on
+
+
+for k = 1:numel(s)
+   rectangle('Position',sorted_bounding_box(k,:),'EdgeColor','g','LineWidth',2)
+   BoundingBox = sorted_bounding_box(k,:);
+   text(BoundingBox(:,1), BoundingBox(:,2), sprintf('%d', k));
+end
+hold off
+
+
+%% Sorting in line
+for f=1:numel(s)
+    if f==numel(s)
+        break;
+    end
+    
+    y1=sorted_bounding_box(f,2);
+    y2=y1+sorted_bounding_box(f,4);
+    
+    refbox1=sorted_bounding_box(f+1,:);
+    x21=sorted_bounding_box(f+1,1);
+    y21=sorted_bounding_box(f+1,2);
+    x22=x21+sorted_bounding_box(f+1,3);
+    y22=y21+sorted_bounding_box(f+1,4);
+    
+    if (y21<y1&& y21<y2)||(y21>y1&&y22<y2)||(y21<y1&&y22<y2)||(y21>y1&&y22>y2)
+       line1{f}=[x21 y21 x22 y22]
+    end
+    
+ end
+    
+
+
+% Extraction
+
+% for n=1:Ne
+%   [r,c] = find(L==n);
+%   n1=img(min(r):max(r),min(c):max(c));
+%   imshow(~n1);
+%   pause(0.5)
+% end
+
+% assert(size(lines{1},2) == 4,'each matrix entry should have size Lx4');
+% assert(size(lines{end},2) == 4,'each matrix entry should have size Lx4');
+% lineSortcheck = lines{1};
+% assert(issorted(lineSortcheck(:,1)) | issorted(lineSortcheck(end:-1:1,1)),'Matrix should be sorted in x1');
+
+end
